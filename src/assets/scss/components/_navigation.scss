@@ -1,0 +1,33 @@
+#menu-main-menu { 
+
+	& > li {
+
+		& > a {
+
+			&:hover, &:focus {
+
+				background: #663399;
+				color: #fff;
+
+			}
+
+		}
+
+	}
+
+}
+
+.site-title {
+
+	.navbar-brand {
+
+		&:hover, &:focus {
+
+			background: #663399;
+			color: #fff;
+
+		}
+
+	}
+
+}

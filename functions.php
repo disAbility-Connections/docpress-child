@@ -1,5 +1,11 @@
 <?php
 
+$theme_header = wp_get_theme();
+
+define( 'THEME_VER', $theme_header->get( 'Version' ) );
+define( 'THEME_URL', get_stylesheet_directory_uri() );
+define( 'THEME_DIR', get_stylesheet_directory() );
+
 add_action( 'init', function() {
 	
 	wp_register_style( 
@@ -7,11 +13,20 @@ add_action( 'init', function() {
 		trailingslashit( get_template_directory_uri() ) . 'style.css'
 	);
 	
+	wp_register_style( 
+		'docpress-child',
+		trailingslashit( THEME_URL ) . 'dist/assets/css/app.css',
+		array(),
+		THEME_VER
+	);
+	
 } );
 
 add_action( 'wp_enqueue_scripts', function() {
 	
 	wp_enqueue_style( 'docpress-parent' );
+	
+	wp_enqueue_style( 'docpress-child' );
 	
 } );
 
