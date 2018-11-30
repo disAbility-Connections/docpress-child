@@ -7,7 +7,7 @@
 				<?php if ( is_active_sidebar( 'sidebar-widgets' ) ) : ?>
 					<div class="content-area doclist col-sm-8 col-md-8">
 				<?php else: ?>
-					<div class="content-area col-sm-12">
+					<div class="content-area doclist col-sm-12">
 				<?php endif; ?>
 					<div class="main-content page">
 						
