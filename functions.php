@@ -58,3 +58,15 @@ function add_wysiwyg_to_term_description( $term, $taxonomy ) {
     </tr>
     <?php
 } 
+
+add_action( 'widgets_init', function() {
+	
+	register_sidebar( array(
+		'id' => 'footer-wide-widgets',
+		'name' => __( 'Footer Wide Widgets', 'docpress-child' ),
+		'description' => __( 'This goes directly above the copyright.', 'docpress-child' ),
+		'before_title' => '<h4 class="widgettitle">',
+		'after_title' => '</h4>',
+	) );
+	
+} );
