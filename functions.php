@@ -70,3 +70,58 @@ add_action( 'widgets_init', function() {
 	) );
 	
 } );
+
+/*
+
+In case we ever have to do an import again, this along with https://wordpress.org/plugins/term-management-tools/ and search-replacing the WP XML for only Categories in order to prepend the slug with the County name speeds things up immensely. 
+
+add_action( 'init', function() {
+	
+	$_query = new WP_Query( array(
+		'post_type' => 'post',
+		'posts_per_page' => -1,
+		'fields' => 'ids',
+	) );
+
+	foreach ( $_query->posts as $post_id ) {
+		
+		$cat_post = array();
+		$cats = wp_get_post_categories( $post_id, array( 'fields' => 'all' ) );
+		
+		if ( ! is_wp_error( $cats ) && ! empty( $cats ) ) {
+			
+			foreach ( $cats as $cat ) {
+				
+				$cat_post[ $cat->term_id ] = $cat->slug;
+				
+				if ( $cat->parent == 0 ) continue;
+				
+				$cat_post = accessforall_complete_parent_category( $cat->parent, $cat_post );
+				
+			}
+			
+			if ( count( $cats ) == count( $cat_post ) ) continue;
+			
+			$data = array(
+				'ID' => $post_id,
+				'post_category' => array_keys( $cat_post ),
+			);
+			
+			wp_update_post( $data );
+			
+		}
+		
+	}
+	
+} );
+
+function accessforall_complete_parent_category( $term_id, $dep=array() ) {
+    $category = get_term( $term_id, 'category' );
+    $dep[ $category->term_id ] = $category->slug;
+    if( $category->parent ) {
+      $dep = accessforall_complete_parent_category( $category->parent, $dep );
+    }
+    return $dep;
+}
+
+*/
