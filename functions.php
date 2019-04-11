@@ -174,15 +174,31 @@ add_filter( 'accessforall_custom_posts_where_category', function( $where ) {
 // This accounts for searching by Tag without leaking into other Categories
 add_filter( 'accessforall_custom_posts_where_after', function( $where ) {
 	
+	global $wpdb;
+	
 	$queried_object = get_queried_object();
+	
+	$user_where = accessforall_custom_get_user_posts_where();
+	
+	// Account for global searches
+	if ( $queried_object === null ) {
+		
+		$where .= ' OR ( ';
+	
+			$where .= "{$wpdb->term_taxonomy}.taxonomy IN( 'post_tag' )";
+			$where .= " AND ";
+			$where .= "{$wpdb->terms}.name LIKE '%" . esc_sql( get_query_var( 's' ) ) . "%'";
+			$where .= $user_where;
+
+		$where .= ' ) ';
+		
+		return $where;
+		
+	}
 	
 	if ( ! is_a( $queried_object, 'WP_Term' ) ) return $where;
 	
 	if ( $queried_object->taxonomy !== 'category' ) return $where;
-	
-	global $wpdb;
-	
-	$user_where = accessforall_custom_get_user_posts_where();
 	
 	$where .= ' OR ( ';
 	
