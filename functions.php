@@ -75,19 +75,8 @@ add_action( 'pre_get_posts', function( $query ) {
 	
 	$query->set( 'orderby', 'title' );
 	$query->set( 'order', 'ASC' );
-	
-	$query->set( 'posts_per_page', -1 );
   
 } );
-
-add_filter( 'posts_request', 'dump_request' );
-
-function dump_request( $input ) {
-
-    //var_dump($input);
-
-    return $input;
-}
 
 add_filter( 'posts_join', 'accessforall_custom_posts_join', 10, 2 );
 /**
