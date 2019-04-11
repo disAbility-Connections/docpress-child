@@ -75,8 +75,19 @@ add_action( 'pre_get_posts', function( $query ) {
 	
 	$query->set( 'orderby', 'title' );
 	$query->set( 'order', 'ASC' );
+	
+	$query->set( 'posts_per_page', -1 );
   
 } );
+
+add_filter( 'posts_request', 'dump_request' );
+
+function dump_request( $input ) {
+
+    //var_dump($input);
+
+    return $input;
+}
 
 add_filter( 'posts_join', 'accessforall_custom_posts_join', 10, 2 );
 /**
@@ -139,11 +150,14 @@ function accessforall_custom_posts_where( $where, $query ) {
         $user_where = accessforall_custom_get_user_posts_where();
 
         $where .= " OR (
-						{$wpdb->term_taxonomy}.taxonomy IN( 'category' )
-						AND
-						{$wpdb->terms}.name LIKE '%" . esc_sql( get_query_var( 's' ) ) . "%'
-						{$user_where}
-						" . apply_filters( 'accessforall_custom_posts_where', '' ) . "
+						( 
+							{$wpdb->term_taxonomy}.taxonomy IN( 'category' )
+							AND
+							{$wpdb->terms}.name LIKE '%" . esc_sql( get_query_var( 's' ) ) . "%'
+							{$user_where}
+							" . apply_filters( 'accessforall_custom_posts_where_category', '' ) . "
+						)
+						" . apply_filters( 'accessforall_custom_posts_where_after', '' ) . "
 					)";
 
     }
@@ -152,7 +166,8 @@ function accessforall_custom_posts_where( $where, $query ) {
 
 }
 
-add_filter( 'accessforall_custom_posts_where', function( $where ) {
+// This accounts for searching by Sub-Category Name within a Category
+add_filter( 'accessforall_custom_posts_where_category', function( $where ) {
 	
 	$queried_object = get_queried_object();
 	
@@ -162,6 +177,34 @@ add_filter( 'accessforall_custom_posts_where', function( $where ) {
 	
 	$where .= ' AND ';
 	$where .= "{$wpdb->terms}.slug LIKE '" . esc_sql( $queried_object->slug ) . "%'";
+	
+	return $where;
+	
+} );
+
+// This accounts for searching by Tag without leaking into other Categories
+add_filter( 'accessforall_custom_posts_where_after', function( $where ) {
+	
+	$queried_object = get_queried_object();
+	
+	if ( ! is_a( $queried_object, 'WP_Term' ) ) return $where;
+	
+	if ( $queried_object->taxonomy !== 'category' ) return $where;
+	
+	global $wpdb;
+	
+	$user_where = accessforall_custom_get_user_posts_where();
+	
+	$where .= ' OR ( ';
+	
+		$where .= "{$wpdb->term_taxonomy}.taxonomy IN( 'post_tag' )";
+		$where .= " AND ";
+		$where .= "{$wpdb->terms}.name LIKE '%" . esc_sql( get_query_var( 's' ) ) . "%'";
+		$where .= " AND ";
+		$where .= "{$wpdb->term_relationships}.term_taxonomy_id IN (" . esc_sql( $queried_object->term_id ) . ") ";
+		$where .= $user_where;
+	
+	$where .= ' ) ';
 	
 	return $where;
 	
