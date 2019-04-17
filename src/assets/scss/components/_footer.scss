@@ -1,0 +1,46 @@
+.footer-credits {
+
+    padding-bottom: 20px; // copying parent theme
+
+    .widget {
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+    }
+
+    .menu-footer-bottom-menu-container {
+
+        ul {
+
+            display: inline;
+
+            li {
+
+                display: inline-block;
+
+                &:after {
+
+                    content: '|';
+                    padding: 0 0.5rem 0 1rem;
+
+                }
+
+                &:last-of-type {
+
+                    &:after {
+
+                        content: '';
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

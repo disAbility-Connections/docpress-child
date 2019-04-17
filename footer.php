@@ -26,7 +26,7 @@
 						<?php dynamic_sidebar( 'footer-wide-widgets' ); ?>
 					</div>
 					<div class="footer-credits text-center">
-						<?php do_action('docpress_credits'); ?>
+						<?php do_action('docpress_child_bottom_menu'); ?>
 					</div>
 				</div>
 			</div>

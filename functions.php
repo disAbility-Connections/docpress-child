@@ -68,6 +68,14 @@ add_action( 'widgets_init', function() {
 		'before_title' => '<h4 class="widgettitle">',
 		'after_title' => '</h4>',
 	) );
+
+	register_sidebar( array(
+		'id' => 'footer-bottom-menu',
+		'name' => __( 'Footer Bottom Menu Area', 'docpress-child' ),
+		'description' => __( 'This goes at the very bottom of the page.', 'docpress-child' ),
+		'before_title' => '<h4 class="widgettitle">',
+		'after_title' => '</h4>',
+	) );
 	
 } );
 
@@ -269,6 +277,14 @@ function accessforall_custom_posts_groupby( $groupby, $query ) {
     }
 
     return $groupby;
+
+}
+
+add_action( 'docpress_child_bottom_menu', 'accessforall_bottom_menu' );
+
+function accessforall_bottom_menu() {
+
+	dynamic_sidebar( 'footer-bottom-menu' );
 
 }
 
