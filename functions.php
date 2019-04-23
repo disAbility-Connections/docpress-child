@@ -291,7 +291,7 @@ function accessforall_bottom_menu() {
 /**
  * Adds the scripts necessary for Google Tag Manager
  * 
- * @since		{{VERSION}}
+ * @since		1.0.6
  * @return		void
  */
 add_action( 'wp_head', function() { 
@@ -315,7 +315,7 @@ add_action( 'wp_head', function() {
  * 
  * @param		string Template File
  * 
- * @since		{{VERSION}}
+ * @since		1.0.6
  * @return		string Template File
  */
 add_filter( 'template_include', function( $template ) {
@@ -329,7 +329,7 @@ add_filter( 'template_include', function( $template ) {
 /**
  * Forcibly injects Google Tag Manager code after the opening <body> tag without needing to edit header.php in the Parent Theme
  * 
- * @since		{{VERSION}}
+ * @since		1.0.6
  * @return		string HTML Content
  */
 add_filter( 'shutdown', function() {
@@ -340,7 +340,7 @@ add_filter( 'shutdown', function() {
 	$insert .= '<!-- End Google Tag Manager (noscript) -->';
 
 	$content = ob_get_clean();
-	
+
 	$content = preg_replace( '#<body([^>]*)>#i', "<body$1>{$insert}", $content );
 
 	echo $content;
