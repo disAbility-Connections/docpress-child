@@ -288,6 +288,65 @@ function accessforall_bottom_menu() {
 
 }
 
+/**
+ * Adds the scripts necessary for Google Tag Manager
+ * 
+ * @since		{{VERSION}}
+ * @return		void
+ */
+add_action( 'wp_head', function() { 
+	
+	?>
+
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-57WMX6D');</script>
+		<!-- End Google Tag Manager -->
+
+	<?php
+    
+} );
+
+/**
+ * Creates an Object Buffer for us to forcibly inject our Google Tag Manager Code inside of later
+ * 
+ * @param		string Template File
+ * 
+ * @since		{{VERSION}}
+ * @return		string Template File
+ */
+add_filter( 'template_include', function( $template ) {
+	
+	ob_start();
+	
+	return $template;
+	
+}, 99 );
+
+/**
+ * Forcibly injects Google Tag Manager code after the opening <body> tag without needing to edit header.php in the Parent Theme
+ * 
+ * @since		{{VERSION}}
+ * @return		string HTML Content
+ */
+add_filter( 'shutdown', function() {
+	
+	$insert = '<!-- Google Tag Manager (noscript) -->';
+	$insert .= '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-57WMX6D"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>';
+	$insert .= '<!-- End Google Tag Manager (noscript) -->';
+
+	$content = ob_get_clean();
+	
+	$content = preg_replace( '#<body([^>]*)>#i', "<body$1>{$insert}", $content );
+
+	echo $content;
+	
+}, 0 );
+
 /*
 
 In case we ever have to do an import again, this along with https://wordpress.org/plugins/term-management-tools/ and search-replacing the WP XML for only Categories in order to prepend the slug with the County name speeds things up immensely. 
